@@ -12,6 +12,6 @@ defmodule PaymentBackend.Repo.Migrations.CreatePayments do
       timestamps(type: :utc_datetime)
     end
 
-    create(unique_index(:payments, [:correlation_id, :amount]))
+    create(unique_index(:payments, [:correlation_id]))
   end
 end
