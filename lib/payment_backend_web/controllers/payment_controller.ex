@@ -5,11 +5,7 @@ defmodule PaymentBackendWeb.PaymentController do
 
   def index(conn, %{"from" => from, "to" => to}) do
     default_summary = Payments.get_payments_summary(from: from, to: to, service: "default")
-
-    task =
-      Task.async(fn -> Payments.get_payments_summary(from: from, to: to, service: "fallback") end)
-
-    fallback_summary = Task.await(task)
+    fallback_summary = Payments.get_payments_summary(from: from, to: to, service: "fallback")
     json(conn, %{"default" => default_summary, "fallback" => fallback_summary})
   end
 
