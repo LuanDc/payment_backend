@@ -14,7 +14,7 @@ services:
     deploy: 
       resources:
         limits:
-          cpus: "0.2"
+          cpus: "0.15"
           memory: "30MB"
 
   apimaster:
@@ -37,8 +37,8 @@ services:
     deploy: 
       resources:
         limits:
-          cpus: "0.35"
-          memory: "120MB"
+          cpus: "0.45"
+          memory: "115MB"
 
   apislave:
     build: .
@@ -60,8 +60,8 @@ services:
     deploy: 
       resources:
         limits:
-          cpus: "0.35"
-          memory: "120MB"
+          cpus: "0.45"
+          memory: "115MB"
 
   db:
     image: postgres:17.0
@@ -74,8 +74,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.35"
-          memory: "80MB"
+          cpus: "0.45"
+          memory: "90MB"
 
 networks:
   backend:
