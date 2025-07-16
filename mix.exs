@@ -5,7 +5,7 @@ defmodule PaymentBackend.MixProject do
     [
       app: :payment_backend,
       version: "0.1.0",
-      elixir: "~> 1.18",
+      elixir: "~> 1.17",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
@@ -63,7 +63,8 @@ defmodule PaymentBackend.MixProject do
       {:nebulex, "~> 2.6"},
       {:oban, "~> 2.19"},
       {:igniter, "~> 0.5", only: [:dev]},
-      {:libcluster, "~> 3.5"}
+      {:libcluster, "~> 3.5"},
+      {:libcluster_postgres, "~> 0.2"}
     ]
   end
 

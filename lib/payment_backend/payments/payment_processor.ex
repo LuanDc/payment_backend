@@ -30,23 +30,24 @@ defmodule PaymentBackend.Payments.PaymentProcessor do
     }
   end
 
-  defp payment_processor_url(:default), do: "http://localhost:8001"
-  defp payment_processor_url(:fallback), do: "http://localhost:8002"
+  defp payment_processor_url(:default),
+    do: System.get_env("DEFAULT_SERVICE_URL", "http://localhost:8001")
+
+  defp payment_processor_url(:fallback),
+    do: System.get_env("FALLBACK_SERVICE_URL", "http://localhost:8002")
 
   defp handle_response({:ok, %HTTPoison.Response{status_code: 200, body: body}}),
     do: {:ok, Poison.decode!(body)}
 
   defp handle_response({:ok, %HTTPoison.Response{status_code: 422, body: body}}) do
-    if String.contains?(body, "CorrelationId already exists") do
-      {:error, :duplicated_payment}
-    else
-      {:error, :unprocessable_entity}
-    end
+    {:error, body}
   end
 
-  defp handle_response({:ok, %HTTPoison.Response{status_code: 500}}),
-    do: {:error, :service_unhealth}
+  defp handle_response({:ok, %HTTPoison.Response{status_code: 500} = error}) do
+    {:error, error}
+  end
 
-  defp handle_response({:error, %HTTPoison.Error{}}),
-    do: {:error, :service_unhealth}
+  defp handle_response({:error, %HTTPoison.Error{} = error}) do
+    {:error, error}
+  end
 end

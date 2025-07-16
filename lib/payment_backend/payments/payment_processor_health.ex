@@ -11,7 +11,7 @@ defmodule PaymentBackend.Payments.PaymentProcessorHealth do
   end
 
   def check_default_health do
-    PaymentBackend.ReplicatedCache.get(@cache_key) || :ok
+    ReplicatedCache.get(@cache_key)
   end
 
   def insert_health_status(status) do
@@ -24,10 +24,10 @@ defmodule PaymentBackend.Payments.PaymentProcessorHealth do
   end
 
   def handle_info(:check_health, state) do
-    if Node.self() == :master@localhost do
+    if Node.self() == :payment_backend@apimaster do
       case PaymentProcessor.check_health() do
         {:ok, %{"failing" => false}} -> insert_health_status(:ok)
-        _ -> insert_health_status(:failing)
+        {:ok, %{"failing" => true}} -> insert_health_status(:failing)
       end
     end
 

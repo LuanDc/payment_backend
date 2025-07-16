@@ -10,14 +10,12 @@ defmodule PaymentBackend.Application do
     Oban.Telemetry.attach_default_logger(encode: false)
 
     topologies = [
-      example: [
-        strategy: Cluster.Strategy.Epmd,
-        config: [hosts: [:master@localhost, :slave@localhost]]
+      default: [
+        strategy: Elixir.Cluster.Strategy.Gossip
       ]
     ]
 
     children = [
-      {Cluster.Supervisor, [topologies, [name: PaymentBackend.ClusterSupervisor]]},
       PaymentBackendWeb.Telemetry,
       {DNSCluster, query: Application.get_env(:payment_backend, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: PaymentBackend.PubSub},
@@ -32,7 +30,8 @@ defmodule PaymentBackend.Application do
       {Task.Supervisor, name: PaymentBackend.TaskSupervisor},
       PaymentBackend.Payments.PaymentProcessorHealth,
       PaymentBackend.Oban,
-      PaymentBackendWeb.Endpoint
+      PaymentBackendWeb.Endpoint,
+      {Cluster.Supervisor, [topologies, [name: PaymentBackend.ClusterSupervisor]]}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

@@ -7,6 +7,8 @@
 # General application configuration
 import Config
 
+config :libcluster, debug: true
+
 config :payment_backend, Oban,
   engine: Oban.Engines.Basic,
   notifier: Oban.Notifiers.Postgres,
