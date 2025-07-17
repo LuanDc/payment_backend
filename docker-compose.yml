@@ -10,7 +10,6 @@ services:
       - "80:80"
     networks:
       - backend
-      - payment-processor
     deploy: 
       resources:
         limits:
