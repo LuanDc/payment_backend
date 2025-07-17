@@ -23,7 +23,7 @@ services:
       - backend
       - payment-processor
     environment:
-      DATABASE_URL: ecto://postgres:postgres@db/payment_backend_dev
+      DATABASE_URL: ecto://postgres:postgres@db/payment_backend_prod
       SECRET_KEY_BASE: 2IFoUO1y3YPq2m3OMhlsWIWuugFEB7UYvlt+sLLHokLly4kGGmtw4VcbzBK/sU7+
       DEFAULT_SERVICE_URL: http://payment-processor-default:8080
       FALLBACK_SERVICE_URL: http://payment-processor-fallback:8080
@@ -46,7 +46,7 @@ services:
       - backend
       - payment-processor
     environment:
-      DATABASE_URL: ecto://postgres:postgres@db/payment_backend_dev
+      DATABASE_URL: ecto://postgres:postgres@db/payment_backend_prod
       SECRET_KEY_BASE: 2IFoUO1y3YPq2m3OMhlsWIWuugFEB7UYvlt+sLLHokLly4kGGmtw4VcbzBK/sU7+
       DEFAULT_SERVICE_URL: http://payment-processor-default:8080
       FALLBACK_SERVICE_URL: http://payment-processor-fallback:8080
