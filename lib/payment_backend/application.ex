@@ -28,16 +28,22 @@ defmodule PaymentBackend.Application do
       # {PaymentBackend.Worker, arg},
       # Start to serve requests, typically the last entry
       {Task.Supervisor, name: PaymentBackend.TaskSupervisor},
-      PaymentBackend.Payments.PaymentProcessorHealth,
-      PaymentBackend.Oban,
-      PaymentBackendWeb.Endpoint,
-      {Cluster.Supervisor, [topologies, [name: PaymentBackend.ClusterSupervisor]]}
+      {Cluster.Supervisor, [topologies, [name: PaymentBackend.ClusterSupervisor]]},
+      PaymentBackend.Oban
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: PaymentBackend.Supervisor]
-    Supervisor.start_link(children, opts)
+    Supervisor.start_link(start_endpoint_children(children), opts)
+  end
+
+  defp start_endpoint_children(children) do
+    if Node.self() == :payment_backend@apimaster do
+      children ++ [PaymentBackend.Payments.PaymentProcessorHealth, PaymentBackendWeb.Endpoint]
+    else
+      children ++ [PaymentBackendWeb.Endpoint]
+    end
   end
 
   # Tell Phoenix to update the endpoint configuration
