@@ -24,9 +24,11 @@ defmodule PaymentBackend.Payments.PaymentProcessorHealth do
   end
 
   def handle_info(:check_health, state) do
-    case PaymentProcessor.check_health() do
-      {:ok, %{"failing" => false}} -> insert_health_status(:ok)
-      {:ok, %{"failing" => true}} -> insert_health_status(:failing)
+    if Node.self() == :payment_backend@apimaster do
+      case PaymentProcessor.check_health() do
+        {:ok, %{"failing" => false}} -> insert_health_status(:ok)
+        {:ok, %{"failing" => true}} -> insert_health_status(:failing)
+      end
     end
 
     Process.send_after(self(), :check_health, 5_000)
