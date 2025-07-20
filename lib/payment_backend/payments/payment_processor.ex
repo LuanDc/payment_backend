@@ -40,7 +40,7 @@ defmodule PaymentBackend.Payments.PaymentProcessor do
     do: {:ok, Poison.decode!(body)}
 
   defp handle_response({:ok, %HTTPoison.Response{status_code: 422, body: body}}) do
-    {:error, body}
+    {:error, Poison.decode!(body)}
   end
 
   defp handle_response({:ok, %HTTPoison.Response{status_code: 500} = error}) do

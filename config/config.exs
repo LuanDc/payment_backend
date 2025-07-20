@@ -12,7 +12,7 @@ config :libcluster, debug: true
 config :payment_backend, Oban,
   engine: Oban.Engines.Basic,
   notifier: Oban.Notifiers.Postgres,
-  queues: [create_payment: 10],
+  queues: [create_payment: 20, create_payment_with_health_service: 20],
   repo: PaymentBackend.Repo
 
 config :payment_backend, PaymentBackend.Oban, repo: PaymentBackend.Repo
