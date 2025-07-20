@@ -7,11 +7,18 @@ defmodule PaymentBackend.Payments.CreatePaymentWorker do
   @impl Oban.Worker
   def perform(%Oban.Job{args: %{"correlation_id" => correlation_id, "service" => service}}) do
     with payment <- Payments.get_payment_by!(correlation_id: correlation_id),
-         :ok <- PaymentProcessorHealth.get_health_status(String.to_atom(service)),
+         :ok <- get_health_status(String.to_atom(service)),
          {:ok, _response} <- make_payment(payment, String.to_atom(service)),
          changeset <- Ecto.Changeset.change(payment, service: String.to_atom(service)),
          {:ok, _payment} <- Repo.update(changeset),
          do: :ok
+  end
+
+  defp get_health_status(service) do
+    case PaymentProcessorHealth.get_health_status(String.to_atom(service)) do
+      :ok -> :ok
+      :failing -> {:error, :failing}
+    end
   end
 
   defp make_payment(payment, service) do
