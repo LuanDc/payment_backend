@@ -7,14 +7,14 @@ services:
       - apimaster
       - apislave
     ports:
-      - "80:80"
+      - "9999:80"
     networks:
       - backend
     deploy: 
       resources:
         limits:
           cpus: "0.15"
-          memory: "30MB"
+          memory: "20MB"
 
   apimaster:
     build: .
@@ -29,6 +29,7 @@ services:
       PHX_HOST: "localhost"
       RELEASE_NODE: payment_backend@apimaster
       RELEASE_COOKIE: "RELEASE_COOKIE"
+      POOL_SIZE: 40
     ports:
       - 4000:4000
     depends_on:
@@ -40,7 +41,7 @@ services:
           memory: "115MB"
 
   apislave:
-    build: .
+    image: harddyz/payment_backend
     networks:
       - backend
       - payment-processor
@@ -52,8 +53,9 @@ services:
       PHX_HOST: "localhost"
       RELEASE_NODE: payment_backend@apislave
       RELEASE_COOKIE: "RELEASE_COOKIE"
+      POOL_SIZE: 40
     ports:
-      - 4001:4001
+      - 4001:4000
     depends_on:
       - db
     deploy: 
@@ -63,18 +65,20 @@ services:
           memory: "115MB"
 
   db:
-    image: postgres:17.0
+    build: .
     networks:
       - backend
     environment:
       POSTGRES_PASSWORD: "postgres"
+    volumes:
+      - ./postgresql.conf:/etc/postgresql/postgresql.conf
     ports:
       - "5432:5432"
     deploy:
       resources:
         limits:
-          cpus: "0.45"
-          memory: "90MB"
+          cpus: "0.75"
+          memory: "1.5GB"
 
 networks:
   backend:

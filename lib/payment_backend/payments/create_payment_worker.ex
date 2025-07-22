@@ -15,7 +15,7 @@ defmodule PaymentBackend.Payments.CreatePaymentWorker do
   end
 
   defp get_health_status(service) do
-    case PaymentProcessorHealth.get_health_status(String.to_atom(service)) do
+    case PaymentProcessorHealth.get_health_status(service) do
       :ok -> :ok
       :failing -> {:error, :failing}
     end

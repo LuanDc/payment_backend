@@ -39,7 +39,7 @@ defmodule PaymentBackend.Payments.PaymentProcessorHealth do
     if Node.self() == :payment_backend@apimaster do
       task = Task.async(fn -> handle_service_health_check(:default) end)
       handle_service_health_check(:fallback)
-      Task.await(task, 500)
+      Task.await(task, 10_000)
     end
 
     Process.send_after(self(), :check_health, 5_000)
